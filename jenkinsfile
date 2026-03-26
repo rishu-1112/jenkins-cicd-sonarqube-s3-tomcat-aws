@@ -1,0 +1,56 @@
+pipeline {
+    agent any
+    stages {
+        stage('initial-step') {
+            steps {
+                git 'https://github.com/rishu-1112/java-project-maven-new.git'
+            }
+        }
+        stage('compile') {
+            steps {
+                sh 'mvn compile'
+            }
+        }
+        stage('SonarQube Analysis') {
+            steps {
+                withSonarQubeEnv('MySonarQubeServer') {
+                    withCredentials([string(credentialsId: 'SONAR_TOKEN', variable: 'SONAR_TOKEN')]) {
+                        sh 'mvn sonar:sonar'
+                    }
+                }
+            }
+        }
+
+        stage('test') {
+            steps {
+                sh 'mvn test -Dmaven.test.failure.ignore=true'
+            }
+        }
+        stage('Artifacts') {
+            steps {
+                sh 'mvn clean package -DskipTests'
+            }
+        }
+        stage('deploy') {
+            steps {
+                deploy adapters: [tomcat9(alternativeDeploymentContext: '', credentialsId: 'tomcat-cred', path: '', url: 'http://43.205.233.101:8080/')], contextPath: 'my-app', war: '**/*.war'
+            }
+        }
+        stage('push-to-s3') {
+            steps {
+                step([$class: 'S3BucketPublisher',
+                    consoleLogLevel: 'INFO',
+                    entries: [[
+                        bucket: 'artifact-bkt-hotstar-test',
+                        sourceFile: '**/*.war',
+                        selectedRegion: 'ap-south-1',
+                        noUploadOnFailure: true,
+                        managedArtifacts: false,
+                        flatten: true
+                    ]],
+                    profileName: 's3creds'
+                ])
+            }
+        }
+    }
+}
