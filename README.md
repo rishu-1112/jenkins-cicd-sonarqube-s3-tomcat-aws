@@ -71,7 +71,7 @@ GitHub → Jenkins → Maven Build → SonarQube Analysis → WAR File →
 
 ### 🔹 Jenkins Pipeline Configuration
 
-![Jenkins Pipeline Execution](screenshots/pipeline-config-2.png)
+![Jenkins Pipeline Execution](screenshots/pipeline-config.png)
 
 ### 🔹 S3 Bucket 
 
