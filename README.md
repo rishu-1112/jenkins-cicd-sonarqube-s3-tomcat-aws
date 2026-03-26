@@ -67,7 +67,7 @@ GitHub → Jenkins → Maven Build → SonarQube Analysis → WAR File →
 
 ### 🔹 Initial SonarQube Dashboard
 
-![SonarQube Dashboard](screenshots/sonarQube-dash.png)
+![SonarQube Dashboard](screenshots/initial-step-sonarQube.png)
 
 ### 🔹 Jenkins Pipeline Configuration
 
